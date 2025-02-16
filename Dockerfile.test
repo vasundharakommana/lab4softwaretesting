@@ -1,0 +1,20 @@
+FROM ubuntu:20.04
+
+# Install curl and bash
+RUN apt-get update && \
+    apt-get install -yq curl bash && \
+    apt-get clean
+
+# Set the working directory
+WORKDIR /app
+
+# Add the test script and wait-for-it.sh to the container
+ADD test.sh /app/test.sh
+COPY wait-for-it.sh /app/wait-for-it.sh
+
+# Set executable permission for the test script
+RUN chmod +x /app/test.sh
+RUN chmod +x /app/wait-for-it.sh
+
+# Define the command to run the test script
+CMD ["bash", "test.sh"]

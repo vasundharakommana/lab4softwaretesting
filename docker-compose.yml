@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+
+  redis:
+    image: "redis:alpine"
+
+  test_client:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - web
+    # Add a retry mechanism if you want test_client to wait for web service to be fully available
+    entrypoint: ["./wait-for-it.sh", "web:5000", "--", "bash", "/app/test.sh"]
